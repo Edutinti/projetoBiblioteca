@@ -30,6 +30,9 @@ while True:
 
         if addlivro:
             sg.popup('Livro adicionado com sucesso!')
+            window['nome'].update('')
+            window['autor'].update('')
+            window['ano_publi'].update('')
         else:
             sg.popup('Esse livro ja foi cadastrado!')
 
