@@ -43,5 +43,8 @@ class Livros:
         return podeAdd
         
     def consultarLivros(self):
-        pass
+        conn = sqlite3.connect('biblioteca.db')
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT nome FROM livros")
             
