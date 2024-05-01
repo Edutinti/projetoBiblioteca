@@ -28,8 +28,9 @@ while True:
         nome = values['nome']
         autor = values['autor']
         ano_publi = values['ano_publi']
-
-        addlivro = classes.Livros.adicionarLivro(classes.Livros(nome,autor,int(ano_publi)))
+        int(ano_publi)
+        livro = classes.Livros(nome,autor,int(ano_publi))
+        addlivro = classes.Livros.adicionarLivro(livro)
 
         if addlivro:
             sg.popup('Livro adicionado com sucesso!')
@@ -39,7 +40,7 @@ while True:
         else:
             sg.popup('Esse livro ja foi cadastrado!')
     
-    if event == 'Procurar livro' and not window2aberta:
+    if event == 'Procurar livro':
         window.hide()
 
         layout_secundario = [
@@ -51,16 +52,18 @@ while True:
 
         window2 = sg.Window('Procurar Livros', layout_secundario)
 
-        window2aberta = True
-
-        if window2aberta:
+        while True:
             event1, values1 = window2.read()
 
-            if event1 == sg.WINDOW_CLOSED or event1 == 'Voltar':
-                window2.close()
+            if event1 == 'Procurar':
+                nome1 = values1['nomeLivro']
+                autor1 = values1['autorLivro']
+                procurarLivro = classes.Livros.consultarLivros(nome1,autor1)
+                # print(procurarLivro)
+            elif event1 == sg.WINDOW_CLOSED or event1 == 'Voltar':
                 window.un_hide()
-                window2aberta = False
-            
+                window2.close()
+                break
 
 window.close()
 

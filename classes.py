@@ -42,9 +42,13 @@ class Livros:
 
         return podeAdd
         
-    def consultarLivros(self):
+    def consultarLivros(x = '',y = ''):
         conn = sqlite3.connect('biblioteca.db')
         cursor = conn.cursor()
 
-        cursor.execute("SELECT nome FROM livros")
-            
+        cursor.execute("SELECT nome, autor FROM livros WHERE nome = ? OR autor = ?", (x, y))
+
+        resultados = cursor.fetchall()
+        print(resultados)
+    
+
