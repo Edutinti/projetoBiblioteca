@@ -1,6 +1,6 @@
 # Sistema de Gerenciamento de Biblioteca:
-# Desenvolva um sistema onde você possa adicionar livros, buscar livros pelo título ou autor, deletar livro do banco de dados como login ADM
-# Use classes para representar livros, membros e a biblioteca em si.
+# Desenvolva um sistema onde você possa adicionar livros, buscar livros pelo título ou autor, deletar livro pelo nome do banco de dados (como login ADM)
+# Use classes para representar livros, membros.
 
 import classes
 import PySimpleGUI as sg
@@ -47,7 +47,7 @@ while True:
             [sg.Text('Nome do Livro:'), sg.InputText(key='nomeLivro')],
             [sg.Text('Autor do Livro:'), sg.InputText(key='autorLivro')],
             [sg.Multiline(size=(60, 5), key='output', disabled=True)],
-            [sg.Button('Procurar')],
+            [sg.Button('Procurar'),sg.Button('Deletar Livro')],
             [sg.Button('Voltar')]
         ]
 
@@ -61,6 +61,15 @@ while True:
                 autor1 = values1['autorLivro']
                 procurarLivro = classes.Livros.consultarLivros(nome1,autor1)    
                 window2['output'].update(procurarLivro)
+            elif event1 == 'Deletar Livro':
+                x = sg.popup_get_text('Qual livro desejas deletar?')
+                deletarLivro = classes.Livros.deletarLivros(x)
+
+                if deletarLivro:
+                    sg.popup('Livro deletado')
+                else:
+                    sg.popup('Livro não encontrado')
+
             elif event1 == sg.WINDOW_CLOSED or event1 == 'Voltar':
                 window.un_hide()
                 window2.close()

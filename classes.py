@@ -55,7 +55,30 @@ class Livros:
         
         return output_text
         
-    
+    def deletarLivros(x):
+        boolean = True
+        conn = sqlite3.connect('biblioteca.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT nome FROM livros")
+        resultados = cursor.fetchall()
+        allNomes = ''
+        for i in resultados:
+            allNomes = allNomes + i[0]
+       
+        if x in allNomes:
+            cursor.execute("DELETE FROM livros WHERE nome = ?", (x,))
+            conn.commit()
+            return boolean
+        else:
+            cursor.close()
+            conn.close()
+            boolean = False
+            return boolean
+            
+
+        
+
+        
 
 
     
