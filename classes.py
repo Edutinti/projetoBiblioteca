@@ -16,7 +16,7 @@ class Livros:
         conn.close()
 
     def adicionarLivro(self):
-        podeAdd = True
+        # podeAdd = True
         conn = sqlite3.connect('biblioteca.db')
         cursor = conn.cursor()
 
@@ -49,6 +49,14 @@ class Livros:
         cursor.execute("SELECT nome, autor FROM livros WHERE nome = ? OR autor = ?", (x, y))
 
         resultados = cursor.fetchall()
-        print(resultados)
+        output_text = ''
+        for i in resultados:
+            output_text =  output_text + f"Nome: {i[0]}, Autor: {i[1]}\n"
+        
+        return output_text
+        
+    
+
+
     
 

@@ -46,6 +46,7 @@ while True:
         layout_secundario = [
             [sg.Text('Nome do Livro:'), sg.InputText(key='nomeLivro')],
             [sg.Text('Autor do Livro:'), sg.InputText(key='autorLivro')],
+            [sg.Multiline(size=(60, 5), key='output', disabled=True)],
             [sg.Button('Procurar')],
             [sg.Button('Voltar')]
         ]
@@ -58,8 +59,8 @@ while True:
             if event1 == 'Procurar':
                 nome1 = values1['nomeLivro']
                 autor1 = values1['autorLivro']
-                procurarLivro = classes.Livros.consultarLivros(nome1,autor1)
-                # print(procurarLivro)
+                procurarLivro = classes.Livros.consultarLivros(nome1,autor1)    
+                window2['output'].update(procurarLivro)
             elif event1 == sg.WINDOW_CLOSED or event1 == 'Voltar':
                 window.un_hide()
                 window2.close()
