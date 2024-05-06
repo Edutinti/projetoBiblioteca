@@ -142,7 +142,6 @@ while True:
             cadastro_aberto = False
             
         elif event1 == 'Salvar Cadastro':
-            # cadastro = cadastrar.Cadastro()
             sg.popup('Cadastro realizado com sucesso!')
             cadLogin = values1['novoLogin']
             cadSenha = values1['novaSenha']
