@@ -16,15 +16,16 @@ layot = [
     [sg.Button('Cadastrar')]
 ]
 
-janela_principal = sg.Window('Login', layot)
+janela_login = sg.Window('Login', layot)
 
 cadastro_aberto = False
 
 while True:
-    event, values = janela_principal.read()
+    event, values = janela_login.read()
     
     if event == sg.WIN_CLOSED:
         break
+        
     elif event == 'Entrar':
         usuario = values['login']
         senha = values['senha']
@@ -33,93 +34,102 @@ while True:
 
         entrar = login.Login()
         retornoFuncao = entrar.validar_login(loginStr, senhaStr)
-        janela_principal['login'].update('')
-        janela_principal['senha'].update('')
+        janela_login['login'].update('')
+        janela_login['senha'].update('')
+# *****LOGIN*****
 
+
+# *****JANELA PRINCIPAL, PROCURAR LIVRO*****
         if retornoFuncao:
-            janela_principal.close()
+            verificar_Tipo_Usuario = entrar.verificar_Tipo_Usuario(loginStr, senhaStr)
+            janela_login.close()
+
+            layoutProcLivro = []
+
+            if verificar_Tipo_Usuario == 'admin':
+
+                layoutProcLivro = [
+                    [sg.Text('Nome do Livro:'), sg.InputText(key='nomeLivro')],
+                    [sg.Text('Autor:'), sg.InputText(key='autor')],
+                    [sg.Multiline(size=(60, 5), key='output', disabled=True)],
+                    [sg.Button('Procurar')],
+                    [sg.Button('Cadastrar Livro'),sg.Button('Deletar Livro')],
+                ]
+
+            elif verificar_Tipo_Usuario == 'user':
+                layoutProcLivro = [
+                    [sg.Text('Nome do Livro:'), sg.InputText(key='nomeLivro')],
+                    [sg.Text('Autor:'), sg.InputText(key='autor')],
+                    [sg.Multiline(size=(60, 5), key='output', disabled=True)],
+                    [sg.Button('Procurar')],
+                ]
+
             
-            ####################################################################################
-            ####################################################################################
-            # ((((((((((((((((((Layout da interface gráfica DA PARTE DE LIVROS))))))))))))))))))
-            ####################################################################################
-            ####################################################################################
+            janela_Procurar_Livro = sg.Window('Procurar Livro', layoutProcLivro)
 
-            layout = [
-                [sg.Text('Nome do Livro:'), sg.InputText(key='nome')],
-                [sg.Text('Autor do Livro:'), sg.InputText(key='autor')],
-                [sg.Text('Ano de Publicação:'), sg.InputText(key='ano_publi')],
-                [sg.Button('Adicionar Livro')],
-                [sg.Button('Procurar livro')]
-            ]
-
-            # Criando a janela da aplicação
-            window = sg.Window('Adicionar Livro', layout)
-
-
-            window2aberta = False
-            # Loop para eventos da janela
             while True:
-                event, values = window.read()
-                if event == sg.WINDOW_CLOSED:
+                eventProc, valuesProc = janela_Procurar_Livro.read()    
+
+                if eventProc == sg.WINDOW_CLOSED:
                     break
-                elif event == 'Adicionar Livro':
-                    nome = values['nome']
-                    autor = values['autor']
-                    ano_publi = values['ano_publi']
-                    int(ano_publi)
-                    livro = livros.Livros(nome,autor,int(ano_publi))
-                    addlivro = livros.Livros.adicionarLivro(livro)
-
-                    if addlivro:
-                        sg.popup('Livro adicionado com sucesso!')
-                        window['nome'].update('')
-                        window['autor'].update('')
-                        window['ano_publi'].update('')
-                    else:
-                        sg.popup('Esse livro ja foi cadastrado!')
+   
+                elif eventProc == 'Procurar':
+                    nome1 = valuesProc['nomeLivro']
+                    autor1 = valuesProc['autor']
+                    procurarLivro = livros.Livros.consultarLivros(nome1,autor1)    
+                    janela_Procurar_Livro['output'].update(procurarLivro)
                 
-                if event == 'Procurar livro':
-                    window.hide()
+                elif eventProc == 'Cadastrar Livro':
+                    janela_Procurar_Livro.hide()
 
-                    layout_secundario = [
-                        [sg.Text('Nome do Livro:'), sg.InputText(key='nomeLivro')],
-                        [sg.Text('Autor do Livro:'), sg.InputText(key='autorLivro')],
-                        [sg.Multiline(size=(60, 5), key='output', disabled=True)],
-                        [sg.Button('Procurar'),sg.Button('Deletar Livro')],
+                    layoutCadLivro = [
+                        [sg.Text('Nome do Livro:'), sg.InputText(key='nome')],
+                        [sg.Text('Autor do Livro:'), sg.InputText(key='autor')],
+                        [sg.Text('Ano de Publicação:'), sg.InputText(key='ano_publi')],
+                        [sg.Button('Adicionar')],
                         [sg.Button('Voltar')]
                     ]
 
-                    window2 = sg.Window('Procurar Livros', layout_secundario)
+                    
+                    janela_Cadastro_Livro = sg.Window('Adicionar Livro', layoutCadLivro)
 
                     while True:
-                        event1, values1 = window2.read()
+                        eventCadLivro, valuesCadLivro = janela_Cadastro_Livro.read()
 
-                        if event1 == 'Procurar':
-                            nome1 = values1['nomeLivro']
-                            autor1 = values1['autorLivro']
-                            procurarLivro = livros.Livros.consultarLivros(nome1,autor1)    
-                            window2['output'].update(procurarLivro)
-                        elif event1 == 'Deletar Livro':
-                            x = sg.popup_get_text('Qual livro desejas deletar?')
-                            deletarLivro = livros.Livros.deletarLivros(x)
-
-                            if deletarLivro:
-                                sg.popup('Livro deletado')
-                            else:
-                                sg.popup('Livro não encontrado')
-
-                        elif event1 == sg.WINDOW_CLOSED or event1 == 'Voltar':
-                            window.un_hide()
-                            window2.close()
+                        if eventCadLivro == sg.WINDOW_CLOSED:
                             break
+                        elif eventCadLivro == 'Adicionar':
+                            nome = valuesCadLivro['nome']
+                            autor = valuesCadLivro['autor']
+                            ano_publi = valuesCadLivro['ano_publi']
+                            int(ano_publi)
+                            livro = livros.Livros(nome,autor,int(ano_publi))
+                            addlivro = livros.Livros.adicionarLivro(livro)
 
-            window.close()
+                            if addlivro:
+                                sg.popup('Livro adicionado com sucesso!')
+                                janela_Cadastro_Livro['nome'].update('')
+                                janela_Cadastro_Livro['autor'].update('')
+                                janela_Cadastro_Livro['ano_publi'].update('')
+                            else:
+                                sg.popup('Esse livro ja foi cadastrado!')
+
+                        elif eventCadLivro == "Voltar":
+                            janela_Cadastro_Livro.close()
+                            janela_Procurar_Livro.un_hide()
+
+                elif eventProc == 'Deletar Livro':
+                    x = sg.popup_get_text('Qual livro desejas deletar?')
+                    deletarLivro = livros.Livros.deletarLivros(x)
+
+                    if deletarLivro:
+                        sg.popup('Livro deletado')
+                    else:
+                        sg.popup('Livro não encontrado')
 
 
-
-    if event == 'Cadastrar' and not cadastro_aberto:
-        janela_principal.hide()
+    elif event == 'Cadastrar':
+        janela_login.hide()
         cadastro = cadastrar.Cadastro()
 
         layot_cadastro = [
@@ -130,30 +140,36 @@ while True:
         ]
 
         janela_cadastro = sg.Window('Cadastro', layot_cadastro)
-        
+
         cadastro_aberto = True
-        
-    if cadastro_aberto:    
-        event1, values1 = janela_cadastro.read()
 
-        if event1 == sg.WIN_CLOSED or event1 == 'Cancelar':
-            janela_cadastro.close()
-            janela_principal.un_hide()
-            cadastro_aberto = False
+        if cadastro_aberto:
+            event1, values1 = janela_cadastro.read()
+
+            if event1 == sg.WIN_CLOSED or event1 == 'Cancelar':
+                janela_cadastro.close()
+                janela_login.un_hide()
+                cadastro_aberto = False
             
-        elif event1 == 'Salvar Cadastro':
-            sg.popup('Cadastro realizado com sucesso!')
-            cadLogin = values1['novoLogin']
-            cadSenha = values1['novaSenha']
+            elif event1 == 'Salvar Cadastro':
+                sg.popup('Cadastro realizado com sucesso!')
+                cadLogin = values1['novoLogin']
+                cadSenha = values1['novaSenha']
 
-            cadLoginStr = str(cadLogin)
-            cadSenhaStr = str(cadSenha)
+                cadLoginStr = str(cadLogin)
+                cadSenhaStr = str(cadSenha)
 
-            cadastro.cadastroPessoa(cadLoginStr, cadSenhaStr)
+                cadastro.cadastroPessoa(cadLoginStr, cadSenhaStr)
 
-            janela_cadastro.close()
-            janela_principal.un_hide()
-            cadastro_aberto = False
+                janela_cadastro.close()
+                janela_login.un_hide()
+                cadastro_aberto = False
 
-janela_principal.close()
+                   
+
+                   
+
+              
+
+janela_login.close()
 
